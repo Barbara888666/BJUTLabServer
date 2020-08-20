@@ -53,6 +53,15 @@ def create_order():
     return api.exp.create_order(session['id'], session['type'], commit_dt, use_d,
                                 time_range, lab_id, usage, instruments)
 
+@ExpBP.route('/order', methods=['POST'])
+@login_required
+def operate_order():
+    form = request.form
+    order_id = post_validate_param(form, 'order_id')
+    status = post_validate_param(form, 'status')
+    reason = post_validate_param(form, 'reason')
+    return api.exp.operate_order(order_id,status,reason)
+
 
 @ExpBP.route('/labs', methods=['GET'])
 def get_labs():

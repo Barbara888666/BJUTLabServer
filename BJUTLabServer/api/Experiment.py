@@ -125,6 +125,28 @@ class ExpAPI:
             'return code': code
         })
 
+    def operate_order(self,order_id:int,status:int,reason:str or None):
+        """
+                管理员操作同意某一条预约记录。
+                使用情景:
+                    管理人员对于面前的预约记录，进行审阅。
+                :param order_id: 预约记录id
+                :param status: 预约记录状态
+                :param reason: 管理员审阅给出结果原因
+        """
+        order = self._sql.query(f'select * from orders where order_id={order_id}')
+        if order['status'] == '0':
+            return jsonify({
+                'return code': '已审阅'
+            })
+        else:
+            proc_name = self._operate_order_proc
+            dataset, code = self._sql.run_proc(proc_name, 1, (order_id, status,reason))
+            return jsonify({
+                'return code': code
+            })
+
+
     def get_labs(self, page_index: int, number: int, filter_str: str or None):
         """
         获取所有实验室的简略信息。filter是为了实现实验室查找功能而扩展的参数，可
